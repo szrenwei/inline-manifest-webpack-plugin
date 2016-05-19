@@ -19,5 +19,8 @@
   ],
   "author": "szrenwei <shizairw@gmail.com> (https://github.com/szrenwei)",
   "license": "MIT",
-  "homepage": "https://github.com/szrenwei/inline-manifest-webpack-plugin"
+  "homepage": "https://github.com/szrenwei/inline-manifest-webpack-plugin",
+  "dependencies": {
+    "source-map-url": "0.4.0"
+  }
 }

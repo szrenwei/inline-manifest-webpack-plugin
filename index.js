@@ -1,3 +1,5 @@
+var sourceMappingURL = require('source-map-url')
+
 function InlineManifestPlugin(options) {}
 
 InlineManifestPlugin.prototype.apply = function(compiler) {
@@ -7,7 +9,12 @@ InlineManifestPlugin.prototype.apply = function(compiler) {
 
             for(var key in compilation.assets){
                 if(key.indexOf('manifest.') > -1){
-                    manifest = compilation.assets[key].source();
+                    // manifestSource will include the //# sourceMappingURL line if
+                    // using sourcemaps so we need to remove
+                    var manifestSource = compilation.assets[key].source()
+                    var manifestSourceWithoutSourceMapUrl = sourceMappingURL.removeFrom(manifestSource)
+
+                    manifest = manifestSourceWithoutSourceMapUrl;
                     break;
                 }
             }
