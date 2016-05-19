@@ -1,0 +1,23 @@
+{
+  "name": "inline-manifest-webpack-plugin",
+  "version": "1.0.0",
+  "description": "inline your Webpack manifest.js with a script tag to save http request",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "./node_modules/eslint/bin/eslint.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/szrenwei/inline-manifest-webpack-plugin.git"
+  },
+  "keywords": [
+    "webpack",
+    "plugin",
+    "manifest",
+    "inline-manifest-webpack-plugin"
+  ],
+  "author": "szrenwei <shizairw@gmail.com> (https://github.com/szrenwei)",
+  "license": "MIT",
+  "homepage": "https://github.com/szrenwei/inline-manifest-webpack-plugin"
+}
