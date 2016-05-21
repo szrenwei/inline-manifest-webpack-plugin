@@ -1,7 +1,10 @@
 var sourceMappingURL = require('source-map-url')
 
 function InlineManifestPlugin(options) {
-	this.options = extend({name: 'webpackManifest'}, options)
+	this.options = extend({
+		name: 'webpackManifest',
+		wrapManifestInScriptTags: false
+	}, options)
 }
 
 InlineManifestPlugin.prototype.apply = function(compiler) {
@@ -20,6 +23,11 @@ InlineManifestPlugin.prototype.apply = function(compiler) {
                 if(key.indexOf('manifest.') > -1){
 					// remove sourceMap url if exist
 					webpackManifest = sourceMappingURL.removeFrom(compilation.assets[key].source())
+					
+					if (me.options.wrapManifestInScriptTags) {
+						webpackManifest = '<script>' + webpackManifest + '</script>';
+					}
+					
                     break
                 }
             }
