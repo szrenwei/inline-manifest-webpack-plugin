@@ -1,28 +1,49 @@
 var sourceMappingURL = require('source-map-url')
 
-function InlineManifestPlugin(options) {}
+function InlineManifestPlugin(options) {
+	this.options = extend({name: 'webpackManifest'}, options)
+}
 
 InlineManifestPlugin.prototype.apply = function(compiler) {
+	var me = this
+
     compiler.plugin('compilation', function(compilation){
         compilation.plugin('html-webpack-plugin-before-html-generation', function(htmlPluginData, callback) {
-            var manifest;
+            var webpackManifest,
+				name = me.options.name
+			// HtmlWebpackPlugin use the 'manifest' name as HTML5's app cache manifest
+			// so we can't use the same name
+			if(name === 'manifest')
+				throw new Error('[InlineManifestWebpackPlugin]: name can\'t be "manifest", please change another')
 
             for(var key in compilation.assets){
                 if(key.indexOf('manifest.') > -1){
-                    // manifestSource will include the //# sourceMappingURL line if
-                    // using sourcemaps so we need to remove
-                    var manifestSource = compilation.assets[key].source()
-                    var manifestSourceWithoutSourceMapUrl = sourceMappingURL.removeFrom(manifestSource)
-
-                    manifest = manifestSourceWithoutSourceMapUrl;
-                    break;
+					// remove sourceMap url if exist
+					webpackManifest = sourceMappingURL.removeFrom(compilation.assets[key].source())
+                    break
                 }
             }
 
-            htmlPluginData.assets && (htmlPluginData.assets.manifest = manifest);
-            callback(null, htmlPluginData);
-        });
-    });
-};
+            htmlPluginData.assets && (htmlPluginData.assets[name] = webpackManifest)
+            callback(null, htmlPluginData)
+        })
+    })
+}
 
-module.exports = InlineManifestPlugin;
+function extend(base){
+	var i = 1,
+		len = arguments.length
+
+	for( ;i < len; i++){
+		var obj = arguments[i]
+		for(var key in obj){
+			if(obj.hasOwnProperty(key)){
+				base[key] = obj[key]
+			}
+		}
+	}
+
+	return base
+}
+
+module.exports = InlineManifestPlugin

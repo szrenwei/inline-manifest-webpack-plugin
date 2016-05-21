@@ -18,10 +18,9 @@ The plugin need to work with [HtmlWebpackPlugin](https://www.npmjs.com/package/h
 
 __step1__: separate the runtime code
 ```javascript
-// the 'common' name below just for demonstration, replace it with yours
 [
 	new webpack.optimize.CommonsChunkPlugin({
-		names: ['common', 'manifest']
+		names: ['vendor', 'manifest']
 	})
 ]
 ```
@@ -30,19 +29,19 @@ __step2__: config HtmlWebpackPlugin:
 [
 	new HtmlWebpackPlugin({
 		excludeChunks: ['manifest'],
-		inject: false,
 		template: './index.ejs'
 	})
 ]
 ```
 
-__step3__: use Inline Manifest Webpack Plugin
+__step3__: configuration, there's only one option right now, the default value of `name` is `webpackManifest`,  result as `htmlWebpackPlugin.files[name]`, __you can specify any other name except `manifest`__, beacuse the name `manifest` haved been used by HtmlWebpackPlugin for H5 app cache manifest.
 ```javascript
 [
-	new InlineManifestWebpackPlugin()
+	new InlineManifestWebpackPlugin({
+		name: 'webpackManifest'
+	})
 ]
 ```
-It will fill the `htmlWebpackPlugin.files.manifest` filed with manifest's source code, you can use in your template as blow.
 
 ```html
 <!-- index.ejs -->
@@ -51,21 +50,16 @@ It will fill the `htmlWebpackPlugin.files.manifest` filed with manifest's source
 <head>
 	<meta charset="UTF-8">
 	<title>App</title>
-	<% for (var css in htmlWebpackPlugin.files.css) { %>
-	<link href="<%= htmlWebpackPlugin.files.css[css] %>" rel="stylesheet">
-	<% } %>
 </head>
 <body>
 
 
-<% if(htmlWebpackPlugin.files.manifest){ %>
+<% if(htmlWebpackPlugin.files.webpackManifest){ %>
 <script>
-	<%=htmlWebpackPlugin.files.manifest%>
+    <%=htmlWebpackPlugin.files.webpackManifest%>
 </script>
 <% } %>
-<% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
-<script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
-<% } %>
+
 </body>
 </html>
 ```
