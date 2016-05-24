@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/szrenwei/inline-manifest-webpack-plugin/tree/master.svg?style=shield)](https://circleci.com/gh/szrenwei/inline-manifest-webpack-plugin/tree/master)
+[![CircleCI](https://circleci.com/gh/szrenwei/inline-manifest-webpack-plugin/tree/master.svg?style=shield)](https://circleci.com/gh/szrenwei/inline-manifest-webpack-plugin/tree/master) [![npm](https://img.shields.io/npm/dt/inline-manifest-webpack-plugin.svg)](https://www.npmjs.com/package/inline-manifest-webpack-plugin)  [![npm](https://img.shields.io/npm/v/inline-manifest-webpack-plugin.svg)](https://www.npmjs.com/package/inline-manifest-webpack-plugin) [![npm](https://img.shields.io/npm/l/inline-manifest-webpack-plugin.svg)](https://www.npmjs.com/package/inline-manifest-webpack-plugin)
 
 Inline Manifest Webpack Plugin
 ===================
