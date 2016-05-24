@@ -4,7 +4,6 @@
   "description": "inline your Webpack manifest.js with a script tag to save http request",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "./node_modules/eslint/bin/eslint.js --ext .js ./"
   },
   "repository": {
