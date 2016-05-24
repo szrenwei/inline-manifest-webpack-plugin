@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/szrenwei/inline-manifest-webpack-plugin/tree/master.svg?style=shield)](https://circleci.com/gh/szrenwei/inline-manifest-webpack-plugin/tree/master)
+
 Inline Manifest Webpack Plugin
 ===================
 
