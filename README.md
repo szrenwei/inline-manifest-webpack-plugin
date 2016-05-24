@@ -34,11 +34,14 @@ __step2__: config HtmlWebpackPlugin:
 ]
 ```
 
-__step3__: configuration, there's only one option right now, the default value of `name` is `webpackManifest`,  result as `htmlWebpackPlugin.files[name]`, __you can specify any other name except `manifest`__, beacuse the name `manifest` haved been used by HtmlWebpackPlugin for H5 app cache manifest.
+__step3__: configuration
+* __name__: default value is `webpackManifest`,  result as `htmlWebpackPlugin.files[name]`, __you can specify any other name except `manifest`__, beacuse the name `manifest` haved been used by HtmlWebpackPlugin for H5 app cache manifest.
+* __separator__: default value is `-`, this options is for find `manifest` chunk, when you build your bundle, you may include `chunkhash` string, eg: `filename: [name]-[chunkhash].js`, the separator is '-'; if you use other separator, just change this option.
 ```javascript
 [
 	new InlineManifestWebpackPlugin({
-		name: 'webpackManifest'
+		name: 'webpackManifest',
+		separator: '-'
 	})
 ]
 ```

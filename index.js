@@ -1,7 +1,10 @@
 var sourceMappingURL = require('source-map-url')
 
 function InlineManifestPlugin(options) {
-	this.options = extend({name: 'webpackManifest'}, options)
+	this.options = extend({
+		name: 'webpackManifest',
+		separator: '-'
+	}, options)
 }
 
 InlineManifestPlugin.prototype.apply = function(compiler) {
@@ -17,7 +20,7 @@ InlineManifestPlugin.prototype.apply = function(compiler) {
 				throw new Error('[InlineManifestWebpackPlugin]: name can\'t be "manifest", please change another')
 
             for(var key in compilation.assets){
-                if(key.indexOf('manifest.') > -1){
+                if(key.indexOf('manifest' + me.options.separator) > -1){
 					// remove sourceMap url if exist
 					webpackManifest = sourceMappingURL.removeFrom(compilation.assets[key].source())
                     break
