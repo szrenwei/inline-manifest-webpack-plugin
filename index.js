@@ -2,9 +2,8 @@ var sourceMappingURL = require('source-map-url')
 
 function InlineManifestPlugin (options) {
     this.options = extend({
-        name: 'webpackManifest',
-        separator: '-'
-    }, options)
+        name: 'webpackManifest'
+    }, options || {})
 }
 
 InlineManifestPlugin.prototype.apply = function (compiler) {
@@ -12,21 +11,31 @@ InlineManifestPlugin.prototype.apply = function (compiler) {
 
     compiler.plugin('compilation', function (compilation) {
         compilation.plugin('html-webpack-plugin-before-html-generation', function (htmlPluginData, callback) {
-            var webpackManifest
             var name = me.options.name
             // HtmlWebpackPlugin use the 'manifest' name as HTML5's app cache manifest
             // so we can't use the same name
-            if (name === 'manifest') throw new Error('[InlineManifestWebpackPlugin]: name can\'t be "manifest", please change another')
+            if (name === 'manifest') {
+                throw new Error('[InlineManifestWebpackPlugin]: name can\'t be "manifest".')
+            }
 
-            for (var key in compilation.assets) {
-                if (key.indexOf('manifest' + me.options.separator) > -1) {
-                    // remove sourceMap url if exist
-                    webpackManifest = sourceMappingURL.removeFrom(compilation.assets[key].source())
-                    break
+            var webpackManifest = []
+            var manifestPath = (compilation.chunks.filter(function (chunk) {
+                return chunk.name === 'manifest'
+            })[0] || {files: []}).files[0]
+
+            if (manifestPath) {
+                webpackManifest.push('<script>')
+                webpackManifest.push(sourceMappingURL.removeFrom(compilation.assets[manifestPath].source()))
+                webpackManifest.push('</script>')
+
+                var manifestIndex = htmlPluginData.assets.js.indexOf(manifestPath)
+                if (manifestIndex >= 0) {
+                    htmlPluginData.assets.js.splice(manifestIndex, 1)
+                    delete htmlPluginData.assets.chunks['manifest']
                 }
             }
 
-            htmlPluginData.assets && (htmlPluginData.assets[name] = webpackManifest)
+            htmlPluginData.assets[name] = webpackManifest.join('')
             callback(null, htmlPluginData)
         })
     })
