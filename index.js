@@ -19,6 +19,7 @@ InlineManifestPlugin.prototype.apply = function (compiler) {
             }
 
             var webpackManifest = []
+            var assets = htmlPluginData.assets
             var manifestPath = (compilation.chunks.filter(function (chunk) {
                 return chunk.name === 'manifest'
             })[0] || {files: []}).files[0]
@@ -28,14 +29,14 @@ InlineManifestPlugin.prototype.apply = function (compiler) {
                 webpackManifest.push(sourceMappingURL.removeFrom(compilation.assets[manifestPath].source()))
                 webpackManifest.push('</script>')
 
-                var manifestIndex = htmlPluginData.assets.js.indexOf(manifestPath)
+                var manifestIndex = assets.js.indexOf(assets.publicPath + manifestPath)
                 if (manifestIndex >= 0) {
-                    htmlPluginData.assets.js.splice(manifestIndex, 1)
-                    delete htmlPluginData.assets.chunks['manifest']
+                    assets.js.splice(manifestIndex, 1)
+                    delete assets.chunks.manifest
                 }
             }
 
-            htmlPluginData.assets[name] = webpackManifest.join('')
+            assets[name] = webpackManifest.join('')
             callback(null, htmlPluginData)
         })
     })
