@@ -12,6 +12,7 @@ InlineManifestPlugin.prototype.apply = function (compiler) {
     compiler.plugin('compilation', function (compilation) {
         compilation.plugin('html-webpack-plugin-before-html-generation', function (htmlPluginData, callback) {
             var name = me.options.name
+            var deleteFile = me.options.deleteFile
             // HtmlWebpackPlugin use the 'manifest' name as HTML5's app cache manifest
             // so we can't use the same name
             if (name === 'manifest') {
@@ -33,6 +34,9 @@ InlineManifestPlugin.prototype.apply = function (compiler) {
                 if (manifestIndex >= 0) {
                     assets.js.splice(manifestIndex, 1)
                     delete assets.chunks.manifest
+                }
+                if (deleteFile) {
+                    delete compilation.assets[manifestPath]
                 }
             }
 
