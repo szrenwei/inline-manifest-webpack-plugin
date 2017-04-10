@@ -2,7 +2,8 @@ var sourceMappingURL = require('source-map-url')
 
 function InlineManifestPlugin (options) {
     this.options = extend({
-        name: 'webpackManifest'
+        name: 'webpackManifest',
+        deleteFile: true
     }, options || {})
 }
 
