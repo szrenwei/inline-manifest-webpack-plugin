@@ -2,7 +2,8 @@ var sourceMappingURL = require('source-map-url')
 
 function InlineManifestPlugin (options) {
     this.options = extend({
-        name: 'webpackManifest'
+        name: 'webpackManifest',
+        deleteFile: true
     }, options || {})
 }
 
@@ -26,8 +27,9 @@ InlineManifestPlugin.prototype.apply = function (compiler) {
             })[0] || {files: []}).files[0]
 
             if (manifestPath) {
+                var sourceCode = compilation.assets[manifestPath].source()
                 webpackManifest.push('<script>')
-                webpackManifest.push(sourceMappingURL.removeFrom(compilation.assets[manifestPath].source()))
+                webpackManifest.push(sourceMappingURL.removeFrom(sourceCode))
                 webpackManifest.push('</script>')
 
                 var manifestIndex = assets.js.indexOf(assets.publicPath + manifestPath)
@@ -36,6 +38,9 @@ InlineManifestPlugin.prototype.apply = function (compiler) {
                     delete assets.chunks.manifest
                 }
                 if (deleteFile) {
+                    if (sourceMappingURL.existsIn(sourceCode)) {
+                        delete compilation.assets[manifestPath + '.map']
+                    }
                     delete compilation.assets[manifestPath]
                 }
             }
