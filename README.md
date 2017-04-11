@@ -10,7 +10,7 @@ Installation
 ------------
 Install the plugin with npm:
 ```shell
-$ npm i inline-manifest-webpack-plugin -D
+$ npm i inline-manifest2-webpack-plugin -D
 ```
 
 Basic Usage
@@ -46,6 +46,7 @@ __Step2__: config HtmlWebpackPlugin:
 
 __Step3__: config InlineManifestWebpackPlugin
 * __name__: default value is `webpackManifest`,  result in `htmlWebpackPlugin.files[name]`, you can specify any other name __except__ `manifest`, beacuse the name `manifest` haved been used by HtmlWebpackPlugin for H5 app cache manifest.
+* __deleteFile__: default value is true, when build complete, delete the manifest.js and manifest.js.json automacticly.
 ```javascript
 [
 	new InlineManifestWebpackPlugin({
