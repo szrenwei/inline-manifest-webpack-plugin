@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/szrenwei/inline-manifest-webpack-plugin/tree/master.svg?style=shield)](https://circleci.com/gh/szrenwei/inline-manifest-webpack-plugin/tree/master) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com) [![npm](https://img.shields.io/npm/dt/inline-manifest-webpack-plugin.svg)](https://www.npmjs.com/package/inline-manifest-webpack-plugin)  [![npm](https://img.shields.io/npm/v/inline-manifest-webpack-plugin.svg)](https://www.npmjs.com/package/inline-manifest-webpack-plugin) [![npm](https://img.shields.io/npm/l/inline-manifest-webpack-plugin.svg)](https://www.npmjs.com/package/inline-manifest-webpack-plugin)
+[![CircleCI](https://circleci.com/gh/almothafar/webpack-inline-manifest-plugin/tree/master.svg?style=shield)](https://circleci.com/gh/almothafar/webpack-inline-manifest-plugin/tree/master) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com) [![npm](https://img.shields.io/npm/dt/webpack-inline-manifest-plugin.svg)](https://www.npmjs.com/package/webpack-inline-manifest-plugin)  [![npm](https://img.shields.io/npm/v/webpack-inline-manifest-plugin.svg)](https://www.npmjs.com/package/webpack-inline-manifest-plugin) [![npm](https://img.shields.io/npm/l/webpack-inline-manifest-plugin.svg)](https://www.npmjs.com/package/webpack-inline-manifest-plugin)
 
 Inline Manifest Webpack Plugin
 ===================
@@ -10,7 +10,7 @@ Installation
 ------------
 Install the plugin with npm:
 ```shell
-$ npm i inline-manifest-webpack-plugin -D
+$ npm i webpack-inline-manifest-plugin -D
 ```
 
 Basic Usage

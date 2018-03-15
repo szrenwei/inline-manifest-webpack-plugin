@@ -1,56 +1,55 @@
-var sourceMappingURL = require('source-map-url')
+const sourceMappingURL = require('source-map-url');
 
-function InlineManifestPlugin (options) {
+function InlineManifestPlugin(options) {
     this.options = extend({
         name: 'webpackManifest'
     }, options || {})
 }
 
 InlineManifestPlugin.prototype.apply = function (compiler) {
-    var me = this
+    const me = this;
 
     compiler.plugin('compilation', function (compilation) {
         compilation.plugin('html-webpack-plugin-before-html-generation', function (htmlPluginData, callback) {
-            var name = me.options.name
+            const name = me.options.name;
             // HtmlWebpackPlugin use the 'manifest' name as HTML5's app cache manifest
             // so we can't use the same name
             if (name === 'manifest') {
-                throw new Error('[InlineManifestWebpackPlugin]: name can\'t be "manifest".')
+                throw new Error('[WebpackInlineManifestPlugin]: name can\'t be "manifest".')
             }
 
-            var webpackManifest = []
-            var assets = htmlPluginData.assets
-            var manifestPath = (compilation.chunks.filter(function (chunk) {
+            const webpackManifest = [];
+            const assets = htmlPluginData.assets;
+            const manifestPath = (compilation.chunks.filter(function (chunk) {
                 return chunk.name === 'manifest'
-            })[0] || {files: []}).files[0]
+            })[0] || {files: []}).files[0];
 
             if (manifestPath) {
-                webpackManifest.push('<script>')
-                webpackManifest.push(sourceMappingURL.removeFrom(compilation.assets[manifestPath].source()))
-                webpackManifest.push('</script>')
+                webpackManifest.push('<script>');
+                webpackManifest.push(sourceMappingURL.removeFrom(compilation.assets[manifestPath].source()));
+                webpackManifest.push('</script>');
 
-                var manifestIndex = assets.js.indexOf(assets.publicPath + manifestPath)
+                const manifestIndex = assets.js.indexOf(assets.publicPath + manifestPath);
                 if (manifestIndex >= 0) {
-                    assets.js.splice(manifestIndex, 1)
+                    assets.js.splice(manifestIndex, 1);
                     delete assets.chunks.manifest
                 }
             }
 
-            assets[name] = webpackManifest.join('')
+            assets[name] = webpackManifest.join('');
             if (callback) {
                 callback(null, htmlPluginData)
             }
         })
     })
-}
+};
 
-function extend (base) {
-    var i = 1
-    var len = arguments.length
+function extend(base) {
+    const len = arguments.length;
 
-    for (; i < len; i++) {
-        var obj = arguments[i]
-        for (var key in obj) {
+    for (let i = 1; i < len; i++) {
+        const obj = arguments[i];
+        for (const key in obj) {
             if (obj.hasOwnProperty(key)) {
                 base[key] = obj[key]
             }
@@ -60,4 +59,4 @@ function extend (base) {
     return base
 }
 
-module.exports = InlineManifestPlugin
+module.exports = InlineManifestPlugin;
