@@ -4,7 +4,8 @@
   "description": "inline your Webpack manifest.js with a script tag to save http request",
   "main": "index.js",
   "scripts": {
-    "lint": "node ./node_modules/eslint/bin/eslint.js --debug -v --color --ext .js"
+    "lint": "npm run eslint --debug -v --color --ext .js",
+    "eslint" : "eslint"
   },
   "repository": {
     "type": "git",
