@@ -1,6 +1,6 @@
 [![CircleCI](https://circleci.com/gh/almothafar/webpack-inline-manifest-plugin/tree/master.svg?style=shield)](https://circleci.com/gh/almothafar/webpack-inline-manifest-plugin/tree/master) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com) [![npm](https://img.shields.io/npm/dt/webpack-inline-manifest-plugin.svg)](https://www.npmjs.com/package/webpack-inline-manifest-plugin)  [![npm](https://img.shields.io/npm/v/webpack-inline-manifest-plugin.svg)](https://www.npmjs.com/package/webpack-inline-manifest-plugin) [![npm](https://img.shields.io/npm/l/webpack-inline-manifest-plugin.svg)](https://www.npmjs.com/package/webpack-inline-manifest-plugin)
 
-Inline Manifest Webpack Plugin
+Webpack Inline Manifest Plugin
 ===================
 
 This is a [webpack](http://webpack.github.io/) plugin that inline your manifest.js with a script tag to save http request. Cause webpack's runtime always change between every build, it's better to split the runtime code out for long-term caching.
