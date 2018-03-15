@@ -1,29 +1,37 @@
 version: 2
 jobs:
-    test:
-        docker:
-          - image: circleci/node:8.10
-        filters:
-            branches:
-                only: master
-        steps:
-          - checkout
-
-        - restore_cache:
-            keys:
+  build:
+    docker:
+      - image: circleci/node:8.10
+    filters:
+      branches:
+        only: master
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
             - v1-dependencies-{{ checksum "package.json" }}
             - v1-dependencies-
 
-        - run: yarn install
+      - run: yarn install
 
-        - save_cache:
-            paths:
+      - save_cache:
+          key: v1-dependencies-{{ checksum "package.json" }}
+          paths:
             - node_modules
-            key: v1-dependencies-{{ checksum "package.json" }}
+  test:
+    docker:
+      - image: circleci/node:8.10
+    filters:
+      branches:
+        only: master
+    steps:
+      - checkout
+      - run: yarn lint
 
-        - run: yarn lint
 workflows:
   version: 2
-  test:
+  build_and_test:
     jobs:
+      - build
       - test
