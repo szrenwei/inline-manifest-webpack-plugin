@@ -44,16 +44,25 @@ __Step2__: config HtmlWebpackPlugin:
 ]
 ```
 
-__Step3__: config InlineManifestWebpackPlugin
+__Step3__: config WebpackInlineManifestPlugin
 * __name__: default value is `webpackManifest`,  result in `htmlWebpackPlugin.files[name]`, you can specify any other name __except__ `manifest`, beacuse the name `manifest` haved been used by HtmlWebpackPlugin for H5 app cache manifest.
+
+Call:
+
+```javascript
+const WebpackInlineManifestPlugin = require('webpack-inline-manifest-plugin');
+```
+
+Config:
 ```javascript
 [
-	new InlineManifestWebpackPlugin({
+	new WebpackInlineManifestPlugin({
 		name: 'webpackManifest'
 	})
 ]
 ```
 
+Finally in HTML:
 ```html
 <!-- index.ejs -->
 <!doctype html>
