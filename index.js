@@ -37,7 +37,9 @@ InlineManifestPlugin.prototype.apply = function (compiler) {
             }
 
             assets[name] = webpackManifest.join('')
-            callback(null, htmlPluginData)
+            if (callback) {
+                callback(null, htmlPluginData)
+            }
         })
     })
 }
