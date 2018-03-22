@@ -9,8 +9,8 @@ function InlineManifestPlugin (options) {
 InlineManifestPlugin.prototype.apply = function (compiler) {
     var me = this
 
-    compiler.plugin('compilation', function (compilation) {
-        compilation.plugin('html-webpack-plugin-before-html-generation', function (htmlPluginData, callback) {
+    compiler.hooks.compilation.tap('inline-manifest-webpack-plugin', function (compilation) {
+        compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration.tap('inline-manifest-webpack-plugin', function (htmlPluginData) {
             var name = me.options.name
             // HtmlWebpackPlugin use the 'manifest' name as HTML5's app cache manifest
             // so we can't use the same name
@@ -37,9 +37,6 @@ InlineManifestPlugin.prototype.apply = function (compiler) {
             }
 
             assets[name] = webpackManifest.join('')
-            if (callback) {
-                callback(null, htmlPluginData)
-            }
         })
     })
 }
