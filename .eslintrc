@@ -1,6 +1,11 @@
 {
-	"extends": "standard",
+	"extends": "eslint:recommended",
 	"rules": {
-		"indent": ["error", 4]
-	}
+        "indent": "off",
+		"indent-legacy": ["error", 4]
+	},
+    "env": {
+        "node": true,
+        "es6": true
+    }
 }
