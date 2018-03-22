@@ -1,32 +1,33 @@
 {
-  "name": "inline-manifest-webpack-plugin",
-  "version": "3.0.1",
+  "name": "webpack-inline-manifest-plugin",
+  "version": "4.0.0",
   "description": "inline your Webpack manifest.js with a script tag to save http request",
   "main": "index.js",
   "scripts": {
-    "lint": "./node_modules/eslint/bin/eslint.js --ext .js ./"
+    "lint": "npm run eslint --debug -v --color --ext .js",
+    "eslint" : "eslint"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/szrenwei/inline-manifest-webpack-plugin.git"
+    "url": "https://github.com/almothafar/webpack-inline-manifest-plugin.git"
   },
   "keywords": [
     "webpack",
     "plugin",
     "manifest",
     "runtime",
-    "inline-manifest-webpack-plugin"
+    "webpack-inline-manifest-plugin"
   ],
-  "author": "szrenwei <shizairw@gmail.com> (https://github.com/szrenwei)",
+  "author": "Al-Mothafar Al-Hasan <almothafar@gmail.com> (https://github.com/almothafar)",
   "license": "MIT",
-  "homepage": "https://github.com/szrenwei/inline-manifest-webpack-plugin",
+  "homepage": "https://github.com/almothafar/webpack-inline-manifest-plugin",
   "dependencies": {
     "source-map-url": "0.4.0"
   },
   "devDependencies": {
-    "eslint": "^2.10.2",
-    "eslint-config-standard": "^5.3.1",
-    "eslint-plugin-promise": "^1.1.0",
-    "eslint-plugin-standard": "^1.3.2"
+    "eslint": "^4.18.2",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.0.1"
   }
 }
