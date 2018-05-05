@@ -9,8 +9,8 @@ function InlineManifestPlugin (options) {
 InlineManifestPlugin.prototype.apply = function (compiler) {
     var me = this
 
-    compiler.plugin('compilation', function (compilation) {
-        compilation.plugin('html-webpack-plugin-before-html-generation', function (htmlPluginData, callback) {
+    compiler.hooks.compile.tap('compilation', function (compilation) {
+        compiler.hooks.run.tapAsync('html-webpack-plugin-before-html-generation', function (htmlPluginData, callback) {
             var name = me.options.name
             // HtmlWebpackPlugin use the 'manifest' name as HTML5's app cache manifest
             // so we can't use the same name
