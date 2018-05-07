@@ -1,61 +1,49 @@
 var sourceMappingURL = require('source-map-url')
 
-function InlineManifestPlugin (options) {
-    this.options = extend({
-        name: 'webpackManifest'
-    }, options || {})
+function InlineManifestWebpackPlugin (name) {
+    this.name = name || 'runtime'
 }
 
-InlineManifestPlugin.prototype.apply = function (compiler) {
-    var me = this
+InlineManifestWebpackPlugin.prototype.apply = function (compiler) {
+    var name = this.name
 
-    compiler.plugin('compilation', function (compilation) {
-        compilation.plugin('html-webpack-plugin-before-html-generation', function (htmlPluginData, callback) {
-            var name = me.options.name
-            // HtmlWebpackPlugin use the 'manifest' name as HTML5's app cache manifest
-            // so we can't use the same name
-            if (name === 'manifest') {
-                throw new Error('[InlineManifestWebpackPlugin]: name can\'t be "manifest".')
-            }
-
-            var webpackManifest = []
-            var assets = htmlPluginData.assets
-            var manifestPath = (compilation.chunks.filter(function (chunk) {
-                return chunk.name === 'manifest'
-            })[0] || {files: []}).files[0]
-
-            if (manifestPath) {
-                webpackManifest.push('<script>')
-                webpackManifest.push(sourceMappingURL.removeFrom(compilation.assets[manifestPath].source()))
-                webpackManifest.push('</script>')
-
-                var manifestIndex = assets.js.indexOf(assets.publicPath + manifestPath)
-                if (manifestIndex >= 0) {
-                    assets.js.splice(manifestIndex, 1)
-                    delete assets.chunks.manifest
-                }
-            }
-
-            assets[name] = webpackManifest.join('')
-            callback(null, htmlPluginData)
+    compiler.hooks.emit
+        .tap('InlineManifestWebpackPlugin', function (compilation) {
+            delete compilation.assets[getAssetName(compilation.chunks, name)]
         })
-    })
+
+    compiler.hooks.compilation
+        .tap('InlineManifestWebpackPlugin', function (compilation) {
+            compilation.hooks.htmlWebpackPluginAlterAssetTags
+                .tapAsync('InlineManifestWebpackPlugin', function (data, cb) {
+                    var manifestAssetName = getAssetName(compilation.chunks, name)
+
+                    if (manifestAssetName) {
+                        data.body = data.body.map(function (script) {
+                            if (script.attributes.src.indexOf(manifestAssetName) >= 0) {
+                                return {
+                                    tagName: 'script',
+                                    closeTag: true,
+                                    attributes: {
+                                        type: 'text/javascript'
+                                    },
+                                    innerHTML: sourceMappingURL.removeFrom(compilation.assets[manifestAssetName].source())
+                                }
+                            }
+
+                            return script
+                        })
+                    }
+
+                    cb(null, data)
+                })
+        })
 }
 
-function extend (base) {
-    var i = 1
-    var len = arguments.length
-
-    for (; i < len; i++) {
-        var obj = arguments[i]
-        for (var key in obj) {
-            if (obj.hasOwnProperty(key)) {
-                base[key] = obj[key]
-            }
-        }
-    }
-
-    return base
+function getAssetName (chunks, chunkName) {
+    return (chunks.filter(function (chunk) {
+        return chunk.name === chunkName
+    })[0] || {files: []}).files[0]
 }
 
-module.exports = InlineManifestPlugin
+module.exports = InlineManifestWebpackPlugin

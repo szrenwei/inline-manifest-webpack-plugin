@@ -16,58 +16,36 @@ $ npm i inline-manifest-webpack-plugin -D
 Basic Usage
 -----------
 
-This plugin need to work with [HtmlWebpackPlugin](https://www.npmjs.com/package/html-webpack-plugin) v2.10.0 and above:
+This plugin need to work with [webpack v4](https://github.com/webpack/webpack) (for webpack v3 and below, pls use [version 3](https://github.com/szrenwei/inline-manifest-webpack-plugin/tree/v3.0.1)) and [HtmlWebpackPlugin v3](https://www.npmjs.com/package/html-webpack-plugin) :
 
 __Step1__: split out the runtime code
 ```javascript
-// for explicit vendor chunk config
-[
-	new webpack.optimize.CommonsChunkPlugin({
-		names: ['vendor', 'manifest']
-	})
-]
+// the default name is "runtime"
+optimization: {
+    runtimeChunk: 'single'
+ }
 
-// or specify which chunk to split manually
-[
-	new webpack.optimize.CommonsChunkPlugin({
-		name: 'manifest',
-        chunks: ['...']
-	})
-]
+// or specify another name
+optimization: {
+    name: 'another name'
+ }
+
 ```
-__Step2__: config HtmlWebpackPlugin:
+__Step2__: add plugins:
 ```javascript
+// this plugin need to put after HtmlWebpackPlugin
 [
-	new HtmlWebpackPlugin({
-		template: './index.ejs'
-	})
+    new HtmlWebpackPlugin(),
+    new InlineManifestWebpackPlugin()
 ]
-```
 
-__Step3__: config InlineManifestWebpackPlugin
-* __name__: default value is `webpackManifest`,  result in `htmlWebpackPlugin.files[name]`, you can specify any other name __except__ `manifest`, beacuse the name `manifest` haved been used by HtmlWebpackPlugin for H5 app cache manifest.
-```javascript
+or
+
 [
-	new InlineManifestWebpackPlugin({
-		name: 'webpackManifest'
-	})
+    new HtmlWebpackPlugin(),
+    // if you changed the runtimeChunk's name, you need to sync it here
+    new InlineManifestWebpackPlugin('anothe name')
 ]
+
 ```
-
-```html
-<!-- index.ejs -->
-<!doctype html>
-<html>
-<head>
-	<meta charset="UTF-8">
-	<title>App</title>
-</head>
-<body>
-
-
-<%=htmlWebpackPlugin.files.webpackManifest%>
-
-</body>
-</html>
-```
-__Done!__
+__Done!__ This will add a script tag which contains the runtime code just before any other scripts.
