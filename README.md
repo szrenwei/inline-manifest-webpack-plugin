@@ -27,7 +27,9 @@ optimization: {
 
 // or specify another name
 optimization: {
-    name: 'another name'
+    runtimeChunk: {
+        name: 'another name'
+    }
  }
 
 ```
@@ -44,8 +46,8 @@ or
 [
     new HtmlWebpackPlugin(),
     // if you changed the runtimeChunk's name, you need to sync it here
-    new InlineManifestWebpackPlugin('anothe name')
+    new InlineManifestWebpackPlugin('another name')
 ]
 
 ```
-__Done!__ This will add a script tag which contains the runtime code just before any other scripts.
+__Done!__ This will replace the external script with inline code.
