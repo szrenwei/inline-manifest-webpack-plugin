@@ -19,19 +19,12 @@ InlineManifestWebpackPlugin.prototype.apply = function (compiler) {
                     var manifestAssetName = getAssetName(compilation.chunks, name)
 
                     if (manifestAssetName) {
-                        data.body = data.body.map(function (script) {
-                            if (script.attributes.src.indexOf(manifestAssetName) >= 0) {
-                                return {
-                                    tagName: 'script',
-                                    closeTag: true,
-                                    attributes: {
-                                        type: 'text/javascript'
-                                    },
-                                    innerHTML: sourceMappingURL.removeFrom(compilation.assets[manifestAssetName].source())
-                                }
-                            }
-
-                            return script
+                        ['head', 'body'].forEach(section => {
+                            data[section] = inlineWhenMatched(
+                                compilation,
+                                data[section],
+                                manifestAssetName
+                            )
                         })
                     }
 
@@ -44,6 +37,26 @@ function getAssetName (chunks, chunkName) {
     return (chunks.filter(function (chunk) {
         return chunk.name === chunkName
     })[0] || {files: []}).files[0]
+}
+
+function inlineWhenMatched (compilation, scripts, manifestAssetName) {
+    return scripts.map(function (script) {
+        const isManifestScript = script.tagName === 'script' &&
+              (script.attributes.src.indexOf(manifestAssetName) >= 0)
+
+        if (isManifestScript) {
+            return {
+                tagName: 'script',
+                closeTag: true,
+                attributes: {
+                    type: 'text/javascript'
+                },
+                innerHTML: sourceMappingURL.removeFrom(compilation.assets[manifestAssetName].source())
+            }
+        }
+
+        return script
+    })
 }
 
 module.exports = InlineManifestWebpackPlugin
