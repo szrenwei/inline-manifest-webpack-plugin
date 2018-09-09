@@ -1,6 +1,6 @@
 {
   "name": "inline-manifest-webpack-plugin",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "inline your Webpack manifest.js with a script tag to save http request",
   "main": "index.js",
   "scripts": {
