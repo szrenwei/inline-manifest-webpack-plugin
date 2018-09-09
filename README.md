@@ -51,3 +51,14 @@ or
 
 ```
 __Done!__ This will replace the external script with inline code.
+
+__One more thing__
+
+if you use `inject: false` in your `HtmlWebpackPlugin`, you can access the runtime code like this:
+```javascript
+<%= htmlWebpackPlugin.files.runtime %>
+
+<% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+<script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
+<% } %>
+```
