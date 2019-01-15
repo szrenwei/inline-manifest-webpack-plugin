@@ -63,7 +63,7 @@ function getAssetName (chunks, chunkName) {
 
 function inlineWhenMatched (compilation, scripts, manifestAssetName) {
     return scripts.map(function (script) {
-        var isManifestScript = script.tagName === 'script' &&
+        var isManifestScript = script.tagName === 'script' && script.attributes.src &&
               (script.attributes.src.indexOf(manifestAssetName) >= 0)
 
         if (isManifestScript) {
