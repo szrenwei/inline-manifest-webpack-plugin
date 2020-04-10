@@ -1,84 +1,119 @@
-var sourceMappingURL = require('source-map-url')
+const sourceMappingURL = require('source-map-url')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-function InlineManifestWebpackPlugin (name) {
-    this.name = name || 'runtime'
-}
+class InlineManifestWebpackPlugin {
+    constructor(name) {
+        this.name = name || 'runtime';
+    }
 
-InlineManifestWebpackPlugin.prototype.apply = function (compiler) {
-    var name = this.name
+    apply(compiler) {
+        const name = this.name;
 
-    compiler.hooks.emit
-        .tap('InlineManifestWebpackPlugin', function (compilation) {
-            delete compilation.assets[getAssetName(compilation.chunks, name)]
-        })
+        compiler.hooks.emit.tap('InlineManifestWebpackPlugin', compilation => {
+            // get asset name without extension
+            const chunkName = getAssetName(compilation.chunks, name)
+                .split('.')
+                .slice(0, -1)
+                .join('.');
 
-    compiler.hooks.compilation
-        .tap('InlineManifestWebpackPlugin', function (compilation) {
-            compilation.hooks.htmlWebpackPluginAlterAssetTags
-                .tapAsync('InlineManifestWebpackPlugin', function (data, cb) {
-                    var manifestAssetName = getAssetName(compilation.chunks, name)
+            // exclude it from the emitted assets
+            Object.keys(compilation.assets).map(key => {
+                // simple comparison not enough here
+                // because it can emit the file itself and sourcemap for it
+                if (key.includes(chunkName)) delete compilation.assets[key];
+            });
+        });
 
-                    if (manifestAssetName) {
-                        ['head', 'body'].forEach(function (section) {
-                            data[section] = inlineWhenMatched(
+        compiler.hooks.compilation.tap(
+            'InlineManifestWebpackPlugin',
+            compilation => {
+                const hooks = HtmlWebpackPlugin.getHooks(compilation);
+
+                hooks.alterAssetTagGroups.tapAsync(
+                    'InlineManifestWebpackPlugin',
+                    function (data, cb) {
+                        const manifestAssetName = getAssetName(compilation.chunks, name);
+
+                        if (manifestAssetName) {
+                            data.headTags = inlineWhenMatched(
                                 compilation,
-                                data[section],
+                                data.headTags,
                                 manifestAssetName
-                            )
-                        })
-                    }
+                            );
 
-                    cb(null, data)
-                })
-
-            compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration
-                .tapAsync('InlineManifestWebpackPlugin', function (htmlPluginData, cb) {
-                    var runtime = []
-                    var assets = htmlPluginData.assets
-                    var manifestAssetName = getAssetName(compilation.chunks, name)
-
-                    if (manifestAssetName && htmlPluginData.plugin.options.inject === false) {
-                        runtime.push('<script>')
-                        runtime.push(sourceMappingURL.removeFrom(compilation.assets[manifestAssetName].source()))
-                        runtime.push('</script>')
-
-                        var runtimeIndex = assets.js.indexOf(assets.publicPath + manifestAssetName)
-                        if (runtimeIndex >= 0) {
-                            assets.js.splice(runtimeIndex, 1)
-                            delete assets.chunks[name]
+                            data.bodyTags = inlineWhenMatched(
+                                compilation,
+                                data.bodyTags,
+                                manifestAssetName
+                            );
                         }
+
+                        cb(null, data);
                     }
+                );
 
-                    assets.runtime = runtime.join('')
-                    cb(null, htmlPluginData)
-                })
-        })
+                hooks.beforeAssetTagGeneration.tapAsync(
+                    'InlineManifestWebpackPlugin',
+                    function (htmlPluginData, cb) {
+                        const runtime = [];
+                        const assets = htmlPluginData.assets;
+                        const manifestAssetName = getAssetName(compilation.chunks, name);
+
+                        if (
+                            manifestAssetName &&
+                            htmlPluginData.plugin.options.inject === false
+                        ) {
+                            runtime.push('<script>');
+                            runtime.push(
+                                sourceMappingURL.removeFrom(
+                                    compilation.assets[manifestAssetName].source()
+                                )
+                            );
+                            runtime.push('</script>');
+
+                            const runtimeIndex = assets.js.indexOf(
+                                assets.publicPath + manifestAssetName
+                            );
+                            if (runtimeIndex >= 0) {
+                                assets.js.splice(runtimeIndex, 1);
+                                delete assets.chunks[name];
+                            }
+                        }
+
+                        assets.runtime = runtime.join('');
+                        cb(null, htmlPluginData);
+                    }
+                );
+            }
+        );
+    }
 }
 
-function getAssetName (chunks, chunkName) {
-    return (chunks.filter(function (chunk) {
-        return chunk.name === chunkName
-    })[0] || {files: []}).files[0]
+function getAssetName(chunks, chunkName) {
+    return (chunks.filter(({ name }) => name === chunkName)[0] || { files: [] }).files[0];
 }
 
-function inlineWhenMatched (compilation, scripts, manifestAssetName) {
+function inlineWhenMatched(compilation, scripts, manifestAssetName) {
     return scripts.map(function (script) {
-        var isManifestScript = script.tagName === 'script' &&
-              (script.attributes.src.indexOf(manifestAssetName) >= 0)
+        const isManifestScript =
+            script.tagName === 'script' &&
+            script.attributes.src.indexOf(manifestAssetName) >= 0;
 
         if (isManifestScript) {
             return {
                 tagName: 'script',
                 closeTag: true,
                 attributes: {
-                    type: 'text/javascript'
+                    type: 'text/javascript',
                 },
-                innerHTML: sourceMappingURL.removeFrom(compilation.assets[manifestAssetName].source())
-            }
+                innerHTML: sourceMappingURL.removeFrom(
+                    compilation.assets[manifestAssetName].source()
+                ),
+            };
         }
 
-        return script
-    })
+        return script;
+    });
 }
 
 module.exports = InlineManifestWebpackPlugin
